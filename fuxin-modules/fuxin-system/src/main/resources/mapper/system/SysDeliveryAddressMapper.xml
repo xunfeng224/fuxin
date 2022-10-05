@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuxin.system.mapper.SysDeliveryAddressMapper">
+    
+    <resultMap type="SysDeliveryAddress" id="SysDeliveryAddressResult">
+        <result property="addressId"    column="address_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="cusName"    column="cus_name"    />
+        <result property="realname"    column="realname"    />
+        <result property="telphone"    column="telphone"    />
+        <result property="telphone2"    column="telphone2"    />
+        <result property="country"    column="country"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="area"    column="area"    />
+        <result property="street"    column="street"    />
+        <result property="zip"    column="zip"    />
+        <result property="isDefaultAddress"    column="is_default_address"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysDeliveryAddressVo">
+        select address_id, customer_id,c.cus_name, realname, telphone, telphone2, country, province, city, area, street, zip, is_default_address, a.created_time, a.update_time
+        from sys_delivery_address a INNER JOIN sys_customer c ON a.customer_id = c.cus_id
+    </sql>
+
+    <select id="selectSysDeliveryAddressList" parameterType="SysDeliveryAddress" resultMap="SysDeliveryAddressResult">
+        <include refid="selectSysDeliveryAddressVo"/>
+        <where>
+            <if test="addressId != null "> and address_id = #{addressId}</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="cusName != null and cusName != ''"> and c.cus_name like concat('%', #{cusName}, '%')</if>
+            <if test="realname != null  and realname != ''"> and realname like concat('%', #{realname}, '%')</if>
+            <if test="telphone != null  and telphone != ''"> and telphone like concat('%', #{telphone}, '%')</if>
+            <if test="isDefaultAddress != null "> and is_default_address = #{isDefaultAddress}</if>
+            <if test="params.beginCreatedTime != null and params.beginCreatedTime != '' and params.endCreatedTime != null and params.endCreatedTime != ''"> and a.created_time between #{params.beginCreatedTime} and #{params.endCreatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysDeliveryAddressByAddressId" parameterType="Long" resultMap="SysDeliveryAddressResult">
+        <include refid="selectSysDeliveryAddressVo"/>
+        where address_id = #{addressId}
+    </select>
+        
+    <insert id="insertSysDeliveryAddress" parameterType="SysDeliveryAddress">
+        insert into sys_delivery_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="addressId != null">address_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="realname != null">realname,</if>
+            <if test="telphone != null">telphone,</if>
+            <if test="telphone2 != null">telphone2,</if>
+            <if test="country != null">country,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="area != null">area,</if>
+            <if test="street != null">street,</if>
+            <if test="zip != null">zip,</if>
+            <if test="isDefaultAddress != null">is_default_address,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="addressId != null">#{addressId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="realname != null">#{realname},</if>
+            <if test="telphone != null">#{telphone},</if>
+            <if test="telphone2 != null">#{telphone2},</if>
+            <if test="country != null">#{country},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="area != null">#{area},</if>
+            <if test="street != null">#{street},</if>
+            <if test="zip != null">#{zip},</if>
+            <if test="isDefaultAddress != null">#{isDefaultAddress},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDeliveryAddress" parameterType="SysDeliveryAddress">
+        update sys_delivery_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="realname != null">realname = #{realname},</if>
+            <if test="telphone != null">telphone = #{telphone},</if>
+            <if test="telphone2 != null">telphone2 = #{telphone2},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="street != null">street = #{street},</if>
+            <if test="zip != null">zip = #{zip},</if>
+            <if test="isDefaultAddress != null">is_default_address = #{isDefaultAddress},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where address_id = #{addressId}
+    </update>
+
+    <delete id="deleteSysDeliveryAddressByAddressId" parameterType="Long">
+--         delete from sys_delivery_address where address_id = #{addressId}
+        update sys_delivery_address set del_falg = '2' where address_id = #{addressId}
+    </delete>
+
+    <delete id="deleteSysDeliveryAddressByAddressIds" parameterType="String">
+--         delete from sys_delivery_address where address_id in
+        update sys_delivery_address set del_falg = '2' where address_id in
+        <foreach item="addressId" collection="array" open="(" separator="," close=")">
+            #{addressId}
+        </foreach>
+    </delete>
+</mapper>

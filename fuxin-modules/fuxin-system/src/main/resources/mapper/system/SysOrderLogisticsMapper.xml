@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuxin.system.mapper.SysOrderLogisticsMapper">
+
+    <resultMap type="SysOrderLogistics" id="SysOrderLogisticsResult">
+        <result property="orderlogisticsId"    column="orderlogistics_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="expressNo"    column="express_no"    />
+        <result property="consigneeRealname"    column="consignee_realname"    />
+        <result property="consigneeTelphone"    column="consignee_telphone"    />
+        <result property="consigneeTelphone2"    column="consignee_telphone2"    />
+        <result property="consigneeAddress"    column="consignee_address"    />
+        <result property="consigneZip"    column="consigne_zip"    />
+        <result property="logisticsType"    column="logistics_type"    />
+        <result property="logisticsId"    column="logistics_id"    />
+        <result property="logisticsFee"    column="logistics_fee"    />
+        <result property="deliveryAmount"    column="delivery_amount"    />
+        <result property="orderlogisticsStatus"    column="orderlogistics_status"    />
+        <result property="logisticsSettlementStatus"    column="logistics_settlement_status"    />
+        <result property="logisticsResult"    column="logistics_result"    />
+        <result property="logisticsCreateTime"    column="logistics_create_time"    />
+        <result property="logisticsUpdateTime"    column="logistics_update_time"    />
+        <result property="logisticsSettlementTime"    column="logistics_settlement_time"    />
+        <result property="logisticsPayChannel"    column="logistics_pay_channel"    />
+        <result property="outTradeNo"    column="out_trade_no"    />
+        <result property="reconciliationStatus"    column="reconciliation_status"    />
+        <result property="reconciliationTime"    column="reconciliation_time"    />
+    </resultMap>
+
+    <sql id="selectSysOrderLogisticsVo">
+        select l.orderlogistics_id, l.order_id,o.order_no, express_no, consignee_realname, consignee_telphone, consignee_telphone2, consignee_address, consigne_zip, l.logistics_type, l.logistics_id, l.logistics_fee, delivery_amount, orderlogistics_status, logistics_settlement_status, logistics_result, logistics_create_time, logistics_update_time, logistics_settlement_time, logistics_pay_channel, l.out_trade_no, reconciliation_status, reconciliation_time, l.del_flag
+        from sys_order_logistics l inner join sys_order o on l.order_id = o .order_id
+    </sql>
+
+    <select id="selectSysOrderLogisticsList" parameterType="SysOrderLogistics" resultMap="SysOrderLogisticsResult">
+        <include refid="selectSysOrderLogisticsVo"/>
+        <where>
+            and l.del_flag = '0'
+            <if test="orderId != null "> and l.order_id = #{orderId}</if>
+            <if test="orderNo != null  and orderNo != ''"> and o.order_no = #{orderNo}</if>
+            <if test="expressNo != null  and expressNo != ''"> and l.express_no = #{expressNo}</if>
+            <if test="consigneeRealname != null  and consigneeRealname != ''"> and l.consignee_realname like concat('%', #{consigneeRealname}, '%')</if>
+            <if test="consigneeTelphone != null  and consigneeTelphone != ''"> and l.consignee_telphone = #{consigneeTelphone}</if>
+            <if test="logisticsType != null "> and l.logistics_type = #{logisticsType}</if>
+            <if test="logisticsId != null "> and l.logistics_id = #{logisticsId}</if>
+            <if test="orderlogisticsStatus != null "> and l.orderlogistics_status = #{orderlogisticsStatus}</if>
+            <if test="logisticsSettlementStatus != null "> and l.logistics_settlement_status = #{logisticsSettlementStatus}</if>
+            <if test="params.beginLogisticsCreateTime != null and params.beginLogisticsCreateTime != '' and params.endLogisticsCreateTime != null and params.endLogisticsCreateTime != ''"> and logistics_create_time between #{params.beginLogisticsCreateTime} and #{params.endLogisticsCreateTime}</if>
+        </where>
+    </select>
+
+    <select id="selectSysOrderLogisticsByOrderlogisticsId" parameterType="Long" resultMap="SysOrderLogisticsResult">
+        <include refid="selectSysOrderLogisticsVo"/>
+        where orderlogistics_id = #{orderlogisticsId}
+    </select>
+
+    <insert id="insertSysOrderLogistics" parameterType="SysOrderLogistics" useGeneratedKeys="true" keyProperty="orderlogisticsId">
+        insert into sys_order_logistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="expressNo != null">express_no,</if>
+            <if test="consigneeRealname != null">consignee_realname,</if>
+            <if test="consigneeTelphone != null">consignee_telphone,</if>
+            <if test="consigneeTelphone2 != null">consignee_telphone2,</if>
+            <if test="consigneeAddress != null">consignee_address,</if>
+            <if test="consigneZip != null">consigne_zip,</if>
+            <if test="logisticsType != null">logistics_type,</if>
+            <if test="logisticsId != null">logistics_id,</if>
+            <if test="logisticsFee != null">logistics_fee,</if>
+            <if test="deliveryAmount != null">delivery_amount,</if>
+            <if test="orderlogisticsStatus != null">orderlogistics_status,</if>
+            <if test="logisticsSettlementStatus != null">logistics_settlement_status,</if>
+            <if test="logisticsResult != null">logistics_result,</if>
+            <if test="logisticsCreateTime != null">logistics_create_time,</if>
+            <if test="logisticsUpdateTime != null">logistics_update_time,</if>
+            <if test="logisticsSettlementTime != null">logistics_settlement_time,</if>
+            <if test="logisticsPayChannel != null">logistics_pay_channel,</if>
+            <if test="outTradeNo != null">out_trade_no,</if>
+            <if test="reconciliationStatus != null">reconciliation_status,</if>
+            <if test="reconciliationTime != null">reconciliation_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="expressNo != null">#{expressNo},</if>
+            <if test="consigneeRealname != null">#{consigneeRealname},</if>
+            <if test="consigneeTelphone != null">#{consigneeTelphone},</if>
+            <if test="consigneeTelphone2 != null">#{consigneeTelphone2},</if>
+            <if test="consigneeAddress != null">#{consigneeAddress},</if>
+            <if test="consigneZip != null">#{consigneZip},</if>
+            <if test="logisticsType != null">#{logisticsType},</if>
+            <if test="logisticsId != null">#{logisticsId},</if>
+            <if test="logisticsFee != null">#{logisticsFee},</if>
+            <if test="deliveryAmount != null">#{deliveryAmount},</if>
+            <if test="orderlogisticsStatus != null">#{orderlogisticsStatus},</if>
+            <if test="logisticsSettlementStatus != null">#{logisticsSettlementStatus},</if>
+            <if test="logisticsResult != null">#{logisticsResult},</if>
+            <if test="logisticsCreateTime != null">#{logisticsCreateTime},</if>
+            <if test="logisticsUpdateTime != null">#{logisticsUpdateTime},</if>
+            <if test="logisticsSettlementTime != null">#{logisticsSettlementTime},</if>
+            <if test="logisticsPayChannel != null">#{logisticsPayChannel},</if>
+            <if test="outTradeNo != null">#{outTradeNo},</if>
+            <if test="reconciliationStatus != null">#{reconciliationStatus},</if>
+            <if test="reconciliationTime != null">#{reconciliationTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysOrderLogistics" parameterType="SysOrderLogistics">
+        update sys_order_logistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="expressNo != null">express_no = #{expressNo},</if>
+            <if test="consigneeRealname != null">consignee_realname = #{consigneeRealname},</if>
+            <if test="consigneeTelphone != null">consignee_telphone = #{consigneeTelphone},</if>
+            <if test="consigneeTelphone2 != null">consignee_telphone2 = #{consigneeTelphone2},</if>
+            <if test="consigneeAddress != null">consignee_address = #{consigneeAddress},</if>
+            <if test="consigneZip != null">consigne_zip = #{consigneZip},</if>
+            <if test="logisticsType != null">logistics_type = #{logisticsType},</if>
+            <if test="logisticsId != null">logistics_id = #{logisticsId},</if>
+            <if test="logisticsFee != null">logistics_fee = #{logisticsFee},</if>
+            <if test="deliveryAmount != null">delivery_amount = #{deliveryAmount},</if>
+            <if test="orderlogisticsStatus != null">orderlogistics_status = #{orderlogisticsStatus},</if>
+            <if test="logisticsSettlementStatus != null">logistics_settlement_status = #{logisticsSettlementStatus},</if>
+            <if test="logisticsResult != null">logistics_result = #{logisticsResult},</if>
+            <if test="logisticsCreateTime != null">logistics_create_time = #{logisticsCreateTime},</if>
+            <if test="logisticsUpdateTime != null">logistics_update_time = #{logisticsUpdateTime},</if>
+            <if test="logisticsSettlementTime != null">logistics_settlement_time = #{logisticsSettlementTime},</if>
+            <if test="logisticsPayChannel != null">logistics_pay_channel = #{logisticsPayChannel},</if>
+            <if test="outTradeNo != null">out_trade_no = #{outTradeNo},</if>
+            <if test="reconciliationStatus != null">reconciliation_status = #{reconciliationStatus},</if>
+            <if test="reconciliationTime != null">reconciliation_time = #{reconciliationTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where orderlogistics_id = #{orderlogisticsId}
+    </update>
+
+    <delete id="deleteSysOrderLogisticsByOrderlogisticsId" parameterType="Long">
+        update sys_order_logistics set del_flag = '2' where orderlogistics_id = #{orderlogisticsId}
+    </delete>
+
+    <delete id="deleteSysOrderLogisticsByOrderlogisticsIds" parameterType="String">
+        update sys_order_logistics set del_flag = '2' where orderlogistics_id in
+        <foreach item="orderlogisticsId" collection="array" open="(" separator="," close=")">
+            #{orderlogisticsId}
+        </foreach>
+    </delete>
+</mapper>

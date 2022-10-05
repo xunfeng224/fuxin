@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.fuxin</groupId>
+        <artifactId>fuxin</artifactId>
+        <version>3.4.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>fuxin-common-log</module>
+        <module>fuxin-common-core</module>
+        <module>fuxin-common-redis</module>
+        <module>fuxin-common-swagger</module>
+        <module>fuxin-common-security</module>
+        <module>fuxin-common-datascope</module>
+		<module>fuxin-common-datasource</module>
+    </modules>
+
+    <artifactId>fuxin-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+	    fuxin-common通用模块
+    </description>
+
+</project>

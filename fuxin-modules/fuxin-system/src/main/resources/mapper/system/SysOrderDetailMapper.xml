@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuxin.system.mapper.SysOrderDetailMapper">
+    
+    <resultMap type="SysOrderDetail" id="SysOrderDetailResult">
+        <result property="orderDetailId"    column="order_detail_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="productPrice"    column="product_price"    />
+        <result property="productMarque"    column="product_marque"    />
+        <result property="productStoreBarcode"    column="product_store_barcode"    />
+        <result property="productModeDesc"    column="product_mode_desc"    />
+        <result property="productModeParams"    column="product_mode_params"    />
+        <result property="discountRate"    column="discount_rate"    />
+        <result property="discountAmount"    column="discount_amount"    />
+        <result property="number"    column="number"    />
+        <result property="subtotal"    column="subtotal"    />
+        <result property="isProductExists"    column="is_product_exists"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysOrderDetailVo">
+        select order_detail_id, od.order_id, o.order_no, product_id, product_name, product_price, product_marque, product_store_barcode, product_mode_desc, product_mode_params, discount_rate, discount_amount, number, subtotal, is_product_exists, od.remark, od.del_flag
+        from sys_order_detail od inner join sys_order o on od.order_id = o.order_id
+    </sql>
+
+    <select id="selectSysOrderDetailList" parameterType="SysOrderDetail" resultMap="SysOrderDetailResult">
+        <include refid="selectSysOrderDetailVo"/>
+        <where>
+            and od.del_flag = '0'
+            <if test="orderId != null "> and od.order_id = #{orderId}</if>
+            <if test="orderNo != null and orderNo != '' "> and o.order_no like concat('%', #{orderNo}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysOrderDetailByOrderDetailId" parameterType="Long" resultMap="SysOrderDetailResult">
+        <include refid="selectSysOrderDetailVo"/>
+        where order_detail_id = #{orderDetailId}
+    </select>
+        
+    <insert id="insertSysOrderDetail" parameterType="SysOrderDetail" useGeneratedKeys="true" keyProperty="orderDetailId">
+        insert into sys_order_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="productPrice != null">product_price,</if>
+            <if test="productMarque != null">product_marque,</if>
+            <if test="productStoreBarcode != null">product_store_barcode,</if>
+            <if test="productModeDesc != null">product_mode_desc,</if>
+            <if test="productModeParams != null">product_mode_params,</if>
+            <if test="discountRate != null">discount_rate,</if>
+            <if test="discountAmount != null">discount_amount,</if>
+            <if test="number != null">number,</if>
+            <if test="subtotal != null">subtotal,</if>
+            <if test="isProductExists != null">is_product_exists,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="productPrice != null">#{productPrice},</if>
+            <if test="productMarque != null">#{productMarque},</if>
+            <if test="productStoreBarcode != null">#{productStoreBarcode},</if>
+            <if test="productModeDesc != null">#{productModeDesc},</if>
+            <if test="productModeParams != null">#{productModeParams},</if>
+            <if test="discountRate != null">#{discountRate},</if>
+            <if test="discountAmount != null">#{discountAmount},</if>
+            <if test="number != null">#{number},</if>
+            <if test="subtotal != null">#{subtotal},</if>
+            <if test="isProductExists != null">#{isProductExists},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysOrderDetail" parameterType="SysOrderDetail">
+        update sys_order_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="productPrice != null">product_price = #{productPrice},</if>
+            <if test="productMarque != null">product_marque = #{productMarque},</if>
+            <if test="productStoreBarcode != null">product_store_barcode = #{productStoreBarcode},</if>
+            <if test="productModeDesc != null">product_mode_desc = #{productModeDesc},</if>
+            <if test="productModeParams != null">product_mode_params = #{productModeParams},</if>
+            <if test="discountRate != null">discount_rate = #{discountRate},</if>
+            <if test="discountAmount != null">discount_amount = #{discountAmount},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="subtotal != null">subtotal = #{subtotal},</if>
+            <if test="isProductExists != null">is_product_exists = #{isProductExists},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where order_detail_id = #{orderDetailId}
+    </update>
+
+    <delete id="deleteSysOrderDetailByOrderDetailId" parameterType="Long">
+        update sys_order_detail set del_flag = '2' where order_detail_id = #{orderDetailId}
+    </delete>
+
+    <delete id="deleteSysOrderDetailByOrderDetailIds" parameterType="String">
+        update sys_order_detail set del_flag = '2' where order_detail_id in
+        <foreach item="orderDetailId" collection="array" open="(" separator="," close=")">
+            #{orderDetailId}
+        </foreach>
+    </delete>
+</mapper>

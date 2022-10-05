@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.fuxin.common.log.service.AsyncLogService,\
+  com.fuxin.common.log.aspect.LogAspect

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuxin.system.mapper.SysProductMapper">
+    
+    <resultMap type="SysProduct" id="SysProductResult">
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="productCategory"    column="product_category"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="productPrice"    column="product_price"    />
+        <result property="productMarque"    column="product_marque"    />
+        <result property="productStoreBarcode"    column="product_store_barcode"    />
+        <result property="productModeDesc"    column="product_mode_desc"    />
+        <result property="productModeParams"    column="product_mode_params"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysProductVo">
+        select product_id, product_name, product_category, avatar, product_price, product_marque, product_store_barcode, product_mode_desc, product_mode_params, del_flag, create_time, update_time from sys_product
+    </sql>
+
+    <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductResult">
+        <include refid="selectSysProductVo"/>
+        <where>  
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="productCategory != null  and productCategory != ''"> and product_category = #{productCategory}</if>
+            <if test="productMarque != null  and productMarque != ''"> and product_marque = #{productMarque}</if>
+            <if test="productStoreBarcode != null  and productStoreBarcode != ''"> and product_store_barcode = #{productStoreBarcode}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysProductByProductId" parameterType="Long" resultMap="SysProductResult">
+        <include refid="selectSysProductVo"/>
+        where product_id = #{productId}
+    </select>
+        
+    <insert id="insertSysProduct" parameterType="SysProduct" useGeneratedKeys="true" keyProperty="productId">
+        insert into sys_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productName != null">product_name,</if>
+            <if test="productCategory != null">product_category,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="productPrice != null">product_price,</if>
+            <if test="productMarque != null">product_marque,</if>
+            <if test="productStoreBarcode != null">product_store_barcode,</if>
+            <if test="productModeDesc != null">product_mode_desc,</if>
+            <if test="productModeParams != null">product_mode_params,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productName != null">#{productName},</if>
+            <if test="productCategory != null">#{productCategory},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="productPrice != null">#{productPrice},</if>
+            <if test="productMarque != null">#{productMarque},</if>
+            <if test="productStoreBarcode != null">#{productStoreBarcode},</if>
+            <if test="productModeDesc != null">#{productModeDesc},</if>
+            <if test="productModeParams != null">#{productModeParams},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysProduct" parameterType="SysProduct">
+        update sys_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="productCategory != null">product_category = #{productCategory},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="productPrice != null">product_price = #{productPrice},</if>
+            <if test="productMarque != null">product_marque = #{productMarque},</if>
+            <if test="productStoreBarcode != null">product_store_barcode = #{productStoreBarcode},</if>
+            <if test="productModeDesc != null">product_mode_desc = #{productModeDesc},</if>
+            <if test="productModeParams != null">product_mode_params = #{productModeParams},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where product_id = #{productId}
+    </update>
+
+    <delete id="deleteSysProductByProductId" parameterType="Long">
+        delete from sys_product where product_id = #{productId}
+    </delete>
+
+    <delete id="deleteSysProductByProductIds" parameterType="String">
+        delete from sys_product where product_id in 
+        <foreach item="productId" collection="array" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </delete>
+</mapper>

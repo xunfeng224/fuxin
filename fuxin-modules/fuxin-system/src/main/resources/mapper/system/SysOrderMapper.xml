@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuxin.system.mapper.SysOrderMapper">
+    
+    <resultMap type="SysOrder" id="SysOrderResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="productCount"    column="product_count"    />
+        <result property="productAmountTotal"    column="product_amount_total"    />
+        <result property="orderAmountTotal"    column="order_amount_total"    />
+        <result property="logisticsFee"    column="logistics_fee"    />
+        <result property="addressId"    column="address_id"    />
+        <result property="orderlogisticsId"    column="orderlogistics_id"    />
+        <result property="payChannel"    column="pay_channel"    />
+        <result property="outTradeNo"    column="out_trade_no"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="deliveryTime"    column="delivery_time"    />
+        <result property="cusId"    column="cus_id"    />
+        <result property="cusName"    column="cus_name"    />
+        <result property="remark"    column="remark"    />
+        <result property="orderSettlementTime"    column="order_settlement_time"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectSysOrderVo">
+        select order_id, order_no, order_status, product_count, product_amount_total, order_amount_total, logistics_fee, address_id, orderlogistics_id, pay_channel, out_trade_no, o.create_by, o.create_time, pay_time, delivery_time, o.cus_id,sys_customer.cus_name, o.remark, order_settlement_time, o.del_flag
+        from sys_order o INNER JOIN sys_customer ON o.cus_id = sys_customer.cus_id
+    </sql>
+
+    <select id="selectSysOrderList" parameterType="SysOrder" resultMap="SysOrderResult">
+        <include refid="selectSysOrderVo"/>
+        <where>
+            and o.del_flag = '0'
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="orderStatus != null "> and order_status = #{orderStatus}</if>
+            <if test="productCount != null "> and product_count = #{productCount}</if>
+            <if test="productAmountTotal != null "> and product_amount_total = #{productAmountTotal}</if>
+            <if test="orderAmountTotal != null "> and order_amount_total = #{orderAmountTotal}</if>
+            <if test="logisticsFee != null "> and logistics_fee = #{logisticsFee}</if>
+            <if test="addressId != null "> and address_id = #{addressId}</if>
+            <if test="orderlogisticsId != null "> and orderlogistics_id = #{orderlogisticsId}</if>
+            <if test="payChannel != null "> and pay_channel = #{payChannel}</if>
+            <if test="outTradeNo != null  and outTradeNo != ''"> and out_trade_no = #{outTradeNo}</if>
+            <if test="payTime != null "> and pay_time = #{payTime}</if>
+            <if test="deliveryTime != null "> and delivery_time = #{deliveryTime}</if>
+            <if test="cusId != null "> and o.cus_id = #{cusId}</if>
+            <if test="cusName != null and deptName != ''"> and o.cus_name like concat('%', #{deptName}, '%')</if>
+            <if test="orderSettlementTime != null "> and order_settlement_time = #{orderSettlementTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(o.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(o.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSysOrderByOrderId" parameterType="Long" resultMap="SysOrderResult">
+        <include refid="selectSysOrderVo"/>
+        where order_id = #{orderId}
+    </select>
+        
+    <insert id="insertSysOrder" parameterType="SysOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into sys_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">order_no,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="productCount != null">product_count,</if>
+            <if test="productAmountTotal != null">product_amount_total,</if>
+            <if test="orderAmountTotal != null">order_amount_total,</if>
+            <if test="logisticsFee != null">logistics_fee,</if>
+            <if test="addressId != null">address_id,</if>
+            <if test="orderlogisticsId != null">orderlogistics_id,</if>
+            <if test="payChannel != null">pay_channel,</if>
+            <if test="outTradeNo != null">out_trade_no,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="deliveryTime != null">delivery_time,</if>
+            <if test="cusId != null">cus_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="orderSettlementTime != null">order_settlement_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="productCount != null">#{productCount},</if>
+            <if test="productAmountTotal != null">#{productAmountTotal},</if>
+            <if test="orderAmountTotal != null">#{orderAmountTotal},</if>
+            <if test="logisticsFee != null">#{logisticsFee},</if>
+            <if test="addressId != null">#{addressId},</if>
+            <if test="orderlogisticsId != null">#{orderlogisticsId},</if>
+            <if test="payChannel != null">#{payChannel},</if>
+            <if test="outTradeNo != null">#{outTradeNo},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="deliveryTime != null">#{deliveryTime},</if>
+            <if test="cusId != null">#{cusId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="orderSettlementTime != null">#{orderSettlementTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysOrder" parameterType="SysOrder">
+        update sys_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="productCount != null">product_count = #{productCount},</if>
+            <if test="productAmountTotal != null">product_amount_total = #{productAmountTotal},</if>
+            <if test="orderAmountTotal != null">order_amount_total = #{orderAmountTotal},</if>
+            <if test="logisticsFee != null">logistics_fee = #{logisticsFee},</if>
+            <if test="addressId != null">address_id = #{addressId},</if>
+            <if test="orderlogisticsId != null">orderlogistics_id = #{orderlogisticsId},</if>
+            <if test="payChannel != null">pay_channel = #{payChannel},</if>
+            <if test="outTradeNo != null">out_trade_no = #{outTradeNo},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="deliveryTime != null">delivery_time = #{deliveryTime},</if>
+            <if test="cusId != null">cus_id = #{cusId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="orderSettlementTime != null">order_settlement_time = #{orderSettlementTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteSysOrderByOrderId" parameterType="Long">
+        update sys_order set del_flag = '2' where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteSysOrderByOrderIds" parameterType="String">
+        update sys_order set del_flag = '2' where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+</mapper>
